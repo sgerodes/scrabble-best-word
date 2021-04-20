@@ -1,7 +1,37 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from collections import Counter
+letters_value_map = {u'а': 1,
+                     u'б': 3,
+                     u'в': 2,
+                     u'г': 2,
+                     u'д': 3,
+                     u'е': 2,
+                     u'ё': 2,
+                     u'ж': 5,
+                     u'з': 5,
+                     u'и': 1,
+                     u'й': 5,
+                     u'к': 2,
+                     u'л': 2,
+                     u'м': 2,
+                     u'н': 1,
+                     u'о': 1,
+                     u'п': 2,
+                     u'р': 2,
+                     u'с': 2,
+                     u'т': 2,
+                     u'у': 3,
+                     u'ф': 8,
+                     u'х': 5,
+                     u'ц': 8,
+                     u'ч': 5,
+                     u'ш': 8,
+                     u'щ': 8,
+                     u'ъ': 15,
+                     u'ы': 5,
+                     u'ь': 5,
+                     u'э': 10,
+                     u'ю': 8,
+                     u'я': 3,
+                     u'*': 0}
 
 letters_in_the_bag = {u'а': 10,
                       u'б': 3,
@@ -37,24 +67,3 @@ letters_in_the_bag = {u'а': 10,
                       u'ю': 1,
                       u'я': 2,
                       u'*': 4}
-
-words_created = [u'иней', u'но', u'кпун', u'длиа', u'кст', u'а', u'т', u'каш', u'н', u'о', u'н', u'вера', u'д', u'и',
-                 u'ейс', u'офет', u'ю', u'ыл', u'ербо', u'о', u'эбн', u'щипц', u'че',
-                 u'хам', u'уня', u'под', u'гмус', u'сть', u'рча', u'', u'', u'', u'',
-                 u'*опиь', u'я', u'ив', u'авоети*а', u'', u'', u'', u'']
-
-counter = Counter(u'')
-
-for word in words_created:
-    for c in word:
-        letters_in_the_bag[c] -= 1
-
-for letter in letters_in_the_bag:
-    number = (str(letters_in_the_bag[letter]) if letters_in_the_bag[letter] > 0 else '--')
-    if letter in counter:
-        if number == str(counter[letter]):
-            number += ' (' + str(counter[letter]) + ') !!!!!'
-        else:
-            number += ' (' + str(counter[letter]) + ')'
-    word = letter.encode("utf8") + " " + number
-    print word
