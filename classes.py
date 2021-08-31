@@ -17,6 +17,12 @@ class Word:
         return f'Word({self.word}: {self.value})'
 
 
+class WordFile:
+    def __init__(self, path, encoding=None):
+        self.path = path
+        self.encoding = encoding
+
+
 class VocabAnalysis:
     letter_count = Counter()
 

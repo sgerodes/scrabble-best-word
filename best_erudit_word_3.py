@@ -3,28 +3,41 @@
 from constants import *
 from classes import *
 from collections import Counter
-from functools import reduce
-
+import logging
+import logging.config
 
 MULTIPLICATOR = [
-                    Multiplicator(27, [1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1]),
-                    Multiplicator(18, [1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1])
-
+                    Multiplicator(9, [1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1]),
+                    Multiplicator(8, [1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1]),
+                    Multiplicator(6, [1, 1, 1, 1, 1, 1, 3, 1, 3, 1, 1, 1, 1, 1, 1]),
                 ][0]
+WORDS_LENGTH = 15
+VOCABULARY = [
+                WordFile("vocab/15_letter_words_sushestvitelnie.txt", "utf-8"),
+                WordFile("vocab/all_15_letter_words.txt", "utf-8"),
+                WordFile("../../IdeaProjects/russian-words/russian_utf8.txt", "utf-8"),
+                WordFile("vocab/word_rus_blog.harrix.org_article_3334.txt", "utf-8"),
+                WordFile("../Russian-Nouns/dist/russian_nouns.txt", "utf-8"),
+                WordFile("../Russian-Nouns/dist/russian_nouns_without_filter.txt", "utf-8"),
+                WordFile("vocab/wordhelper_ru/wordhelper_ru_15_letter_words_2_list.txt", "utf-8"),
+                WordFile("vocab/rus-yaz_niv_ru/words_filtered.txt", "utf-8"),
+                WordFile("vocab/erudit_1-1_su/words.txt", "utf-8"),
+              ][5]
 
-VOCABULARY = 'vocab/' + [
-                "15_letter_words_sushestvitelnie.txt",
-                "all_15_letter_words.txt",
-                "dummy.txt"
-              ][0]
 
+logger = logging.getLogger(__name__)
+logging.config.fileConfig("logging.conf")
 
 def main():
-    words = read_15_letter_words()
+    print(get_word_value(Word("четырехугольник")))
+    words = read_words()
+    for w in words:
+        if w.word in "четырехугольник":
+            print(w.word)
     filtered_words = filer_out_out_not_possible_words(words)
-    enrich_with_values(words)
+    enrich_with_values(filtered_words)
     sort_by_value(filtered_words)
-    analysis = analyse_vocab(words)
+    analysis = analyse_vocab(filtered_words)
 
     print(analysis)
     for w in filtered_words[:5]:
@@ -38,14 +51,17 @@ def analyse_vocab(words):
     return analysis
 
 
-def read_15_letter_words():
-    with open(VOCABULARY, encoding='utf-8', mode="r") as f:
+def read_words():
+    print(f"Reading {VOCABULARY.path}")
+    with open(VOCABULARY.path, encoding=VOCABULARY.encoding, mode="r") as f:
         words = [Word(w) for w in f.read().split("\n")]
     return words
 
 
 def filer_out_out_not_possible_words(words):
-    return list(filter(lambda x: bag_has_sufficient_letters_for_word(x), words))
+    words = filter(lambda x: len(x.word) == WORDS_LENGTH, words)
+    words = filter(lambda x: bag_has_sufficient_letters_for_word(x), words)
+    return list(words)
 
 
 def sort_by_value(filtered_words):
@@ -76,7 +92,7 @@ def get_word_value(word):
 def bag_has_sufficient_letters_for_word(word):
     counter = Counter(word.word)
     for c in counter:
-        if counter[c] > letters_in_the_bag[c]:
+        if c not in letters_in_the_bag or counter[c] > letters_in_the_bag[c]:
             return False
     return True
 
